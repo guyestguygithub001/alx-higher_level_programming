@@ -1,10 +1,11 @@
 #!/usr/bin/python3
-# This module takes in a URL and an email, 
-# sends a POST request to the URL with the email as a parameter,
-# displays the body of the response
-
+"""
+Python script that takes in a URL, an email, sends a POST
+request to passed URL with email as a parameter,
+displays the body of the response,,.
+"""
 import sys
-import urllib import request, parse
+from urllib import request, parse
 
 
 if __name__ == "__main__":
