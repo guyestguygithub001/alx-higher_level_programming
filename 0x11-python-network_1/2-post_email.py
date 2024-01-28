@@ -4,8 +4,7 @@
 # displays the body of the response
 
 import sys
-import urllib.request
-import urllib.parse
+import urllib import request, parse
 
 
 if __name__ == "__main__":
@@ -16,3 +15,4 @@ if __name__ == "__main__":
     with request.urlopen(req) as response:
         body = response.read()
         print(body.decode('utf-8'))
+
