@@ -45,4 +45,3 @@ request(url, function (err, response, body) {
     console.log('An error occurred. Status code: ' + response.statusCode);
   }
 });
-

@@ -1,82 +1,35 @@
 #!/usr/bin/node
+// Import the 'request' module for making HTTP requests
+const request = require('request');
 
-// Import the 'request' module
-const req = require('request');
+// Define a function that fetches and prints the characters of a Star Wars movie
+function getCharacters(movieId) {
+  // Construct the URL for the API request
+  const url = `https://swapi.dev/api/films/${movieId}/`;
 
-// Get the film ID from the command line arguments
-const id = process.argv[2];
+  // Make a request to the Star Wars API to get the data of the specified movie
+  request(url, function (error, response, body) {
+    // If the request was successful (no errors and status code 200), proceed
+    if (!error && response.statusCode == 200) {
+      // Parse the body of the response (which is in JSON format) to a JavaScript object
+      const movie = JSON.parse(body);
 
-// Define the base URL for the Star Wars API
-const url = 'https://swapi-api.hbtn.io/api/films/';
+      // For each character URL in the movie data, make another request to get the character's data
+      movie.characters.forEach((characterUrl) => {
+        request(characterUrl, function (error, response, body) {
+          // If the request was successful, print the name of the character
+          if (!error && response.statusCode == 200) {
+            const character = JSON.parse(body);
+            console.log(character.name);
+          }
+        });
+      });
+    }
+  });
+}
 
-// Make a GET request to the Star Wars API for the specified film
-req.get(url + id, function (error, res, body) {
-  // If there's an error, log it
-  if (error) {
-    console.log(error);
-  }
+// Get the movie ID from the command-line arguments
+const movieId = process.argv[2];
 
-  // Parse the body of the response into a JavaScript object
-  const data = JSON.parse(body);
-
-  // Get the list of characters from the film data
-  const dd = data.characters;
-
-  // For each character in the list
-  for (const i of dd) {
-    // Make a GET request to the Star Wars API for the character's data
-    req.get(i, function (error, res, body1) {
-      // If there's an error, log it
-      if (error) {
-        console.log(error);
-      }
-
-      // Parse the body of the response into a JavaScript object
-      const data1 = JSON.parse(body1);
-
-      // Log the name of the character
-      console.log(data1.name);
-    });
-  }
-});
-#!/usr/bin/node
-
-// Import the 'request' module
-const req = require('request');
-
-// Get the film ID from the command line arguments
-const id = process.argv[2];
-
-// Define the base URL for the Star Wars API
-const url = 'https://swapi-api.hbtn.io/api/films/';
-
-// Make a GET request to the Star Wars API for the specified film
-req.get(url + id, function (error, res, body) {
-  // If there's an error, log it
-  if (error) {
-    console.log(error);
-  }
-
-  // Parse the body of the response into a JavaScript object
-  const data = JSON.parse(body);
-
-  // Get the list of characters from the film data
-  const dd = data.characters;
-
-  // For each character in the list
-  for (const i of dd) {
-    // Make a GET request to the Star Wars API for the character's data
-    req.get(i, function (error, res, body1) {
-      // If there's an error, log it
-      if (error) {
-        console.log(error);
-      }
-
-      // Parse the body of the response into a JavaScript object
-      const data1 = JSON.parse(body1);
-
-      // Log the name of the character
-      console.log(data1.name);
-    });
-  }
-});
+// Call the function with the specified movie ID
+getCharacters(movieId);
