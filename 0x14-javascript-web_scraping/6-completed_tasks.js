@@ -51,4 +51,3 @@ request(apiUrl, function (error, response, body) {
     // This line logs an error message if there was an error making the request.
   }
 });
-

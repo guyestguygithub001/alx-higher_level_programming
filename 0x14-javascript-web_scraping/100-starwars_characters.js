@@ -48,4 +48,3 @@ request(apiUrl, function (error, response, body) {
     // This line logs an error message if there was an error fetching the movie data.
   }
 });
-

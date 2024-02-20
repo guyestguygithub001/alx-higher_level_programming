@@ -12,4 +12,3 @@ request.get(process.argv[2])
     console.log(`code: ${response.statusCode}`);
     // Log HTTP status code of response to console
   });
-
