@@ -1,50 +1,82 @@
 #!/usr/bin/node
-// This line is a shebang that tells the system this script is a Node.js script.
 
-const request = require('request');
-// This line imports the 'request' module which is used to make HTTP requests.
+// Import the 'request' module
+const req = require('request');
 
-const movieId = process.argv[2];
-// This line gets the third command line argument (the first being 'node', the second being the script name), which is the ID of the movie.
+// Get the film ID from the command line arguments
+const id = process.argv[2];
 
-const apiUrl = `https://swapi.dev/api/films/${movieId}/`;
-// This line constructs the URL to fetch the movie data from the SWAPI (Star Wars API).
+// Define the base URL for the Star Wars API
+const url = 'https://swapi-api.hbtn.io/api/films/';
 
-request(apiUrl, function (error, response, body) {
-// This line sends a request to the SWAPI to get the movie data.
+// Make a GET request to the Star Wars API for the specified film
+req.get(url + id, function (error, res, body) {
+  // If there's an error, log it
+  if (error) {
+    console.log(error);
+  }
 
-  if (!error && response.statusCode === 200) {
-    // This line checks if the request was successful.
+  // Parse the body of the response into a JavaScript object
+  const data = JSON.parse(body);
 
-    const movieData = JSON.parse(body);
-    // This line parses the JSON response body into a JavaScript object.
+  // Get the list of characters from the film data
+  const dd = data.characters;
 
-    console.log(`Characters of "${movieData.title}":`);
-    // This line logs the title of the movie.
+  // For each character in the list
+  for (const i of dd) {
+    // Make a GET request to the Star Wars API for the character's data
+    req.get(i, function (error, res, body1) {
+      // If there's an error, log it
+      if (error) {
+        console.log(error);
+      }
 
-    movieData.characters.forEach((characterUrl) => {
-      // This line starts a loop over each character URL in the movie data.
+      // Parse the body of the response into a JavaScript object
+      const data1 = JSON.parse(body1);
 
-      request(characterUrl, function (charError, charResponse, charBody) {
-        // This line sends a request to the SWAPI to get the character data.
-
-        if (!charError && charResponse.statusCode === 200) {
-          // This line checks if the request was successful.
-
-          const characterData = JSON.parse(charBody);
-          // This line parses the JSON response body into a JavaScript object.
-
-          console.log(characterData.name);
-          // This line logs the name of the character.
-
-        } else {
-          console.error('Error fetching character data:', charError);
-          // This line logs an error message if there was an error fetching the character data.
-        }
-      });
+      // Log the name of the character
+      console.log(data1.name);
     });
-  } else {
-    console.error('Error fetching movie data:', error);
-    // This line logs an error message if there was an error fetching the movie data.
+  }
+});
+#!/usr/bin/node
+
+// Import the 'request' module
+const req = require('request');
+
+// Get the film ID from the command line arguments
+const id = process.argv[2];
+
+// Define the base URL for the Star Wars API
+const url = 'https://swapi-api.hbtn.io/api/films/';
+
+// Make a GET request to the Star Wars API for the specified film
+req.get(url + id, function (error, res, body) {
+  // If there's an error, log it
+  if (error) {
+    console.log(error);
+  }
+
+  // Parse the body of the response into a JavaScript object
+  const data = JSON.parse(body);
+
+  // Get the list of characters from the film data
+  const dd = data.characters;
+
+  // For each character in the list
+  for (const i of dd) {
+    // Make a GET request to the Star Wars API for the character's data
+    req.get(i, function (error, res, body1) {
+      // If there's an error, log it
+      if (error) {
+        console.log(error);
+      }
+
+      // Parse the body of the response into a JavaScript object
+      const data1 = JSON.parse(body1);
+
+      // Log the name of the character
+      console.log(data1.name);
+    });
   }
 });
