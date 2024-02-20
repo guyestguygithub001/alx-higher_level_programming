@@ -1,47 +1,47 @@
 #!/usr/bin/node
 
-// Importing the 'request' module
+// Import the 'request' module
 const request = require('request');
 
-// Getting the API URL from the command line arguments
-const apiUrl = process.argv[2];
+// Get the URL from the command line arguments
+const url = process.argv[2];
 
-// Making a request to the API
-request(apiUrl, function (error, response, body) {
-  // Checking if there is no error and the status code is 200 (OK)
-  if (!error && response.statusCode === 200) {
-    try {
-      // Parsing the body of the response to a JSON object
-      const todos = JSON.parse(body);
+// Send a request to the provided URL
+request(url, function (err, response, body) {
+  // If there's an error, log it
+  if (err) {
+    console.log(err);
+  } 
+  // If the response status code is 200 (OK), process the response body
+  else if (response.statusCode === 200) {
+    // Initialize an object to hold the count of completed tasks per user
+    const completed = {};
 
-      // Creating an object to store the completed tasks count for each user
-      const completed = {};
+    // Parse the response body into a JSON object
+    const tasks = JSON.parse(body);
 
-      // Iterating over each todo item
-      todos.forEach((todo) => {
-        // Checking if the todo item is completed
-        if (todo.completed) {
-          // If the user has not been added to the completed object, add them with a count of 1
-          // Otherwise, increment the count of completed tasks for the user
-          if (completed[todo.userId] === undefined) {
-            completed[todo.userId] = 1;
-          } else {
-            completed[todo.userId]++;
-          }
+    // Iterate over each task in the tasks object
+    for (const i in tasks) {
+      const task = tasks[i];
+
+      // If the task is completed
+      if (task.completed === true) {
+        // If the user hasn't been added to the completed object yet, add them with a count of 1
+        if (completed[task.userId] === undefined) {
+          completed[task.userId] = 1;
+        } 
+        // If the user is already in the completed object, increment their count
+        else {
+          completed[task.userId]++;
         }
-      });
-
-      // Formatting the completed object to a string for output
-      const output = `{${Object.entries(completed).map(([key, value]) => ` '${key}': ${value}`).join(',\n ')} }`;
-
-      // If there are more than 2 users, output the formatted string, otherwise output the completed object
-      console.log(Object.keys(completed).length > 2 ? output : completed);
-    } catch (parseError) {
-      // If there is an error parsing the JSON, log the error
-      console.error('Error parsing JSON:', parseError);
+      }
     }
-  } else {
-    // If there is an error with the request, log the error
-    console.error('Error:', error);
+
+    // Log the completed tasks count per user
+    console.log(completed);
+  } 
+  // If the response status code is anything other than 200, log an error message with the status code
+  else {
+    console.log('An error occured. Status code: ' + response.statusCode);
   }
 });
